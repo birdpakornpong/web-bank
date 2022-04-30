@@ -11,6 +11,53 @@ export default function CardComponent() {
     const [balance, setBalance] = useState(0);
     const [statusTransaction, setStatusTransaction] = useState(true);
 
+
+    const tabComponentStatusTransaction = () => {
+        return (
+            <>
+                {statusTransaction ?
+                <>
+                    <p>status</p>
+                    <Button variant="primary" onClick={() => {}}>Again</Button>
+                </> 
+                : 
+                <>
+                    <TabComponent />
+                </>} 
+            </>
+        )
+    }
+    
+    const cardDetailComponent = () => {
+        return (
+            <>
+                {walletAddress ? 
+                    <>
+                        <Card.Title><b>Balance : {numberFormat(balance)}</b></Card.Title> 
+                        <article>
+                            {tabComponentStatusTransaction()}
+                        </article>
+                    </>
+                    : 
+                    <>
+                        <article>
+                            <span>
+                                <p>           
+                                    <a target="_blank" href={`https://metamask.io/download.html`}>
+                                        You must install Metamask, a virtual Ethereum wallet, in your
+                                        browser.
+                                    </a>
+                                </p>
+                            </span>
+                        </article>  
+                        <article>
+                            <p>Connect to Metamask using the top right button.</p>
+                        </article>
+                    </>        
+                }  
+            </>
+        )
+    }
     return (
         <Card style={{ borderRadius: '20px', width: '52em' }}> 
             <Card.Header>
@@ -30,38 +77,7 @@ export default function CardComponent() {
                     <b>Address :</b> {walletAddress || <span className="text-error-i"> Not Connect</span>}                
                 </Card.Text>
                 <br />
-                {walletAddress ? 
-                    <>
-                        <Card.Title><b>Balance : {numberFormat(balance)}</b></Card.Title> 
-                        <article>
-                            {statusTransaction ?
-                            <>
-                                <p>status</p>
-                                <Button variant="primary" onClick={() => {}}>Again</Button>
-                            </> 
-                            : 
-                            <>
-                                <TabComponent />
-                            </>} 
-                        </article>
-                    </>
-                    : 
-                    <>
-                        <article>
-                            <span>
-                                <p>           
-                                    <a target="_blank" href={`https://metamask.io/download.html`}>
-                                        You must install Metamask, a virtual Ethereum wallet, in your
-                                        browser.
-                                    </a>
-                                </p>
-                            </span>
-                        </article>  
-                        <article>
-                            <p>Connect to Metamask using the top right button.</p>
-                        </article>
-                    </>        
-                }                 
+                {cardDetailComponent()}    
                 {/* <p className="status-box-i">Recent Transaction History</p> */}                 
             </Card.Body>
         </Card>

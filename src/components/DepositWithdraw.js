@@ -16,8 +16,7 @@ export default function DepositWithdraw(props) {
                     <Button variant="primary" onClick={() => {}}>
                         Confirm
                     </Button>
-                </section>
-                                   
+                </section>                                  
             </Form> 
         </div>
     )
