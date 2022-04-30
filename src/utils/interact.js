@@ -74,6 +74,36 @@ export const checkTotalBalance = async (owner) => {
     return totalBalance
 }
 
+async function sendTransaction(transactionParameters) {
+    try {
+        const txHash = await window.ethereum.request({
+            method: "eth_sendTransaction",
+            params: [transactionParameters],
+        });
+        return {
+            status: (transactionView(txHash)),
+        };
+    } catch (error) {
+        return {
+            status: "😥 " + error.message,
+        };
+    }
+}
+
+const transactionView = (txHash) => {
+    return (
+        <span>
+            ✅{" "}
+            <a target="_blank" href={`https://kovan.etherscan.io/tx/${txHash}`}>
+            View the status of your transaction on Etherscan!
+            </a>
+            <br />
+            ℹ️ Once the transaction is verified by the network, the message will
+            be updated automatically.
+        </span>
+    )
+}
+
 export const depositAmount = async (address, number) => {
     const transactionParameters = {
         to: contractAddress,
@@ -81,29 +111,8 @@ export const depositAmount = async (address, number) => {
         value: number,
         data: bankContract.methods.deposit().encodeABI(),
     }
-    try {
-        const txHash = await window.ethereum.request({
-            method: "eth_sendTransaction",
-            params: [transactionParameters],
-        });
-        return {
-            status: (
-            <span>
-                ✅{" "}
-                <a target="_blank" href={`https://kovan.etherscan.io/tx/${txHash}`}>
-                View the status of your transaction on Etherscan!
-                </a>
-                <br />
-                ℹ️ Once the transaction is verified by the network, the message will
-                be updated automatically.
-            </span>
-            ),
-        };
-    } catch (error) {
-        return {
-            status: "😥 " + error.message,
-        };
-    }
+    const status = await sendTransaction(transactionParameters)
+    return status
 }
 
 export const withdrawAmount = async (address, number) => {
@@ -112,29 +121,8 @@ export const withdrawAmount = async (address, number) => {
         from: address,
         data: bankContract.methods.withdraw(number).encodeABI(),
     }
-    try {
-        const txHash = await window.ethereum.request({
-            method: "eth_sendTransaction",
-            params: [transactionParameters],
-        });
-        return {
-            status: (
-            <span>
-                ✅{" "}
-                <a target="_blank" href={`https://kovan.etherscan.io/tx/${txHash}`}>
-                View the status of your transaction on Etherscan!
-                </a>
-                <br />
-                ℹ️ Once the transaction is verified by the network, the message will
-                be updated automatically.
-            </span>
-            ),
-        };
-    } catch (error) {
-        return {
-            status: "😥 " + error.message,
-        };
-    }
+    const status = await sendTransaction(transactionParameters)
+    return status
 }
 
 export const transferAmount = async (address, to, amount) => {
@@ -143,27 +131,6 @@ export const transferAmount = async (address, to, amount) => {
         from: address,
         data: bankContract.methods.transfer(to,amount).encodeABI(),
     };
-    try {
-        const txHash = await window.ethereum.request({
-            method: "eth_sendTransaction",
-            params: [transactionParameters],
-        });
-        return {
-            status: (
-            <span>
-                ✅{" "}
-                <a target="_blank" href={`https://kovan.etherscan.io/tx/${txHash}`}>
-                View the status of your transaction on Etherscan!
-                </a>
-                <br />
-                ℹ️ Once the transaction is verified by the network, the message will
-                be updated automatically.
-            </span>
-            ),
-        };
-    } catch (error) {
-    return {
-        status: "😥 " + error.message,
-    };
-    }
+    const status = await sendTransaction(transactionParameters)
+    return status
 }

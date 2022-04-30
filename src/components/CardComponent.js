@@ -16,7 +16,6 @@ export default function CardComponent() {
     const [totalBalance, setTotalBalance] = useState(0)
 
     useEffect(() => {
-        // addSmartContractListener();
         async function fetchWallet() {
           const {address, status} = await getCurrentWalletConnected();
           setWalletAddress(address);
@@ -83,8 +82,9 @@ export default function CardComponent() {
 
     const transfer = async (addressTo, amount) => {
         // setLoading(true)
-        const { status } = await transferAmount(walletAddress, addressTo, amount);
+        const { status } = await transferAmount(String(walletAddress), String(addressTo), amount);
         setDetailTran(status) 
+         // setLoading(false)
         setStatusTransaction(true) 
     }
 
