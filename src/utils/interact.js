@@ -69,6 +69,11 @@ export const checkBalanceOwner = async (owner) => {
     return balance
 }
 
+export const checkTotalBalance = async (owner) => {
+    const totalBalance = await bankContract.methods.checkTotal().call();
+    return totalBalance
+}
+
 export const depositAmount = async (address, number) => {
     const transactionParameters = {
         to: contractAddress,

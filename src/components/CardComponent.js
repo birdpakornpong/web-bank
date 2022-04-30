@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Button, Row, Col, Card } from 'react-bootstrap';
 import { numberFormat } from "../utils/util"
 import TabComponent from './TabComponent';
-import { connectWallet, getCurrentWalletConnected, checkBalanceOwner, depositAmount, transferAmount, withdrawAmount } from '../utils/interact';
+import { connectWallet, getCurrentWalletConnected, checkBalanceOwner, depositAmount, transferAmount, withdrawAmount, checkTotalBalance } from '../utils/interact';
 import './CardComponent.css'
 
 
@@ -13,6 +13,7 @@ export default function CardComponent() {
     const [statusTransaction, setStatusTransaction] = useState(false);
     const [detailTran, setDetailTran] = useState("")
     const [status, setStatus] = useState("");
+    const [totalBalance, setTotalBalance] = useState(0)
 
     useEffect(() => {
         // addSmartContractListener();
@@ -22,6 +23,7 @@ export default function CardComponent() {
           setStatus(status); 
         }
         fetchWallet();
+        checkTotalBank();
         addWalletListener();
     }, []);
 
@@ -34,6 +36,11 @@ export default function CardComponent() {
     async function checkBalance() {
         const balanceRes = await checkBalanceOwner(String(walletAddress));
         setBalance(balanceRes)
+    }
+
+    async function checkTotalBank() {
+        const totalBalanceRes = await checkTotalBalance();
+        setTotalBalance(totalBalanceRes)
     }
     
     async function connectWalletPressed () {
@@ -137,6 +144,7 @@ export default function CardComponent() {
                 </Row>
             </Card.Header>
             <Card.Body className="py-5">
+                <h2>Total Balance Bank : {numberFormat(totalBalance)}</h2>
                 <Card.Text>
                     <b>Address :</b> {walletAddress || <span className="text-error-i"> Not Connect</span>}                
                 </Card.Text>
