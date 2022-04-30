@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Button, Row, Col, Card } from 'react-bootstrap';
 import { numberFormat } from "../utils/util"
 import TabComponent from './TabComponent';
-import { connectWallet, getCurrentWalletConnected } from '../utils/interact';
+import { connectWallet, getCurrentWalletConnected, checkBalanceOwner, depositAmount, transferAmount, withdrawAmount } from '../utils/interact';
 import './CardComponent.css'
 
 
@@ -10,7 +10,8 @@ export default function CardComponent() {
 
     const [walletAddress, setWalletAddress] = useState("");
     const [balance, setBalance] = useState(0);
-    const [statusTransaction, setStatusTransaction] = useState(true);
+    const [statusTransaction, setStatusTransaction] = useState(false);
+    const [detailTran, setDetailTran] = useState("")
     const [status, setStatus] = useState("");
 
     useEffect(() => {
@@ -22,7 +23,24 @@ export default function CardComponent() {
         }
         fetchWallet();
         addWalletListener();
-      }, []);
+    }, []);
+
+    useEffect(() => {
+        if (walletAddress) {
+            checkBalance();
+        }
+    }, [walletAddress])
+
+    async function checkBalance() {
+        const balanceRes = await checkBalanceOwner(String(walletAddress));
+        setBalance(balanceRes)
+    }
+    
+    async function connectWalletPressed () {
+        const walletResponse = await connectWallet();
+        setStatus(walletResponse.status);
+        setWalletAddress(walletResponse.address);
+    };
 
     function addWalletListener() {
         if (window.ethereum) {
@@ -48,21 +66,41 @@ export default function CardComponent() {
         }
     }
 
-    async function connectWalletPressed () {
-        const walletResponse = await connectWallet();
-        setStatus(walletResponse.status);
-        setWalletAddress(walletResponse.address);
-    };
+    const deposit = async (amount) => {
+        // setLoading(true)
+        const { status } = await depositAmount(String(walletAddress), amount);
+        setDetailTran(status)
+        // setLoading(false)
+        setStatusTransaction(true)
+    }
+
+    const transfer = async (addressTo, amount) => {
+        // setLoading(true)
+        const { status } = await transferAmount(walletAddress, addressTo, amount);
+        setDetailTran(status) 
+        setStatusTransaction(true) 
+    }
+
+    const withdraw = async (amount) => {
+        // setLoading(true)
+        const {status} = await withdrawAmount(String(walletAddress), amount);
+        setDetailTran(status)
+        // setLoading(false)
+        setStatusTransaction(true)
+    }
 
     const tabComponentStatusTransaction = () => {
         return (
             <>
                 {statusTransaction ?
                 <>
-                    <p>status</p>
-                    <Button variant="primary" onClick={console.log('')}>Again</Button>
+                    {detailTran}
+                    <div>
+                        <Button variant="primary" onClick={() => setStatusTransaction(false)}>Transaction Again</Button>
+                    </div>
+                    
                 </> 
-                :  <TabComponent />} 
+                :  <TabComponent deposit={deposit} withdraw={withdraw} transfer={transfer} />} 
             </>
         )
     }
@@ -83,7 +121,7 @@ export default function CardComponent() {
             </>
         )
     }
-    
+
     return (
         <Card style={{ borderRadius: '20px', width: '52em' }}> 
             <Card.Header>
