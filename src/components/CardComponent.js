@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Button, Row, Col, Card } from 'react-bootstrap';
 import { numberFormat } from "../utils/util"
 import TabComponent from './TabComponent';
+import { connectWallet, getCurrentWalletConnected } from '../utils/interact';
 import './CardComponent.css'
 
 
@@ -10,7 +11,48 @@ export default function CardComponent() {
     const [walletAddress, setWalletAddress] = useState("");
     const [balance, setBalance] = useState(0);
     const [statusTransaction, setStatusTransaction] = useState(true);
+    const [status, setStatus] = useState("");
 
+    useEffect(() => {
+        // addSmartContractListener();
+        async function fetchWallet() {
+          const {address, status} = await getCurrentWalletConnected();
+          setWalletAddress(address);
+          setStatus(status); 
+        }
+        fetchWallet();
+        addWalletListener();
+      }, []);
+
+    function addWalletListener() {
+        if (window.ethereum) {
+            window.ethereum.on("accountsChanged", (accounts) => {
+            if (accounts.length > 0) {
+                setWalletAddress(accounts[0]);
+                setStatus("👆🏽 Write a message in the text-field above.");
+            } else {
+                setWalletAddress("");
+            }
+            });
+        } else {
+            setStatus(
+            <p>
+                {" "}
+                🦊{" "}
+                <a target="_blank" href={`https://metamask.io/download.html`}>
+                You must install Metamask, a virtual Ethereum wallet, in your
+                browser.
+                </a>
+            </p>
+            );
+        }
+    }
+
+    async function connectWalletPressed () {
+        const walletResponse = await connectWallet();
+        setStatus(walletResponse.status);
+        setWalletAddress(walletResponse.address);
+    };
 
     const tabComponentStatusTransaction = () => {
         return (
@@ -18,16 +60,13 @@ export default function CardComponent() {
                 {statusTransaction ?
                 <>
                     <p>status</p>
-                    <Button variant="primary" onClick={() => {}}>Again</Button>
+                    <Button variant="primary" onClick={console.log('')}>Again</Button>
                 </> 
-                : 
-                <>
-                    <TabComponent />
-                </>} 
+                :  <TabComponent />} 
             </>
         )
     }
-    
+
     const cardDetailComponent = () => {
         return (
             <>
@@ -38,26 +77,13 @@ export default function CardComponent() {
                             {tabComponentStatusTransaction()}
                         </article>
                     </>
-                    : 
-                    <>
-                        <article>
-                            <span>
-                                <p>           
-                                    <a target="_blank" href={`https://metamask.io/download.html`}>
-                                        You must install Metamask, a virtual Ethereum wallet, in your
-                                        browser.
-                                    </a>
-                                </p>
-                            </span>
-                        </article>  
-                        <article>
-                            <p>Connect to Metamask using the top right button.</p>
-                        </article>
-                    </>        
+                    :  <article>{status}</article>  
+     
                 }  
             </>
         )
     }
+    
     return (
         <Card style={{ borderRadius: '20px', width: '52em' }}> 
             <Card.Header>
@@ -68,7 +94,7 @@ export default function CardComponent() {
                     <Col xs="5" className="mt-2 px-4 card-hearder-i">
                         { walletAddress ? 
                             <Button variant="success">Online</Button>
-                            : <Button variant="primary" onClick={() => {}}>Connect Metamark</Button>}      
+                            : <Button variant="primary" onClick={connectWalletPressed}>Connect Metamark</Button>}      
                     </Col>                     
                 </Row>
             </Card.Header>
