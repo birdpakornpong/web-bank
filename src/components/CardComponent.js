@@ -16,6 +16,7 @@ export default function CardComponent() {
     const [status, setStatus] = useState("");
     const [totalBalance, setTotalBalance] = useState(0);
     const [loading, setLoading] = useState(false)
+    const [loadingTotal, setLoadingTotal] = useState(false)
 
     useEffect(() => {
         async function fetchWallet() {
@@ -29,24 +30,23 @@ export default function CardComponent() {
     }, []);
 
     useEffect(() => {
-        if (walletAddress) {
-            setLoading(true)
+        if (walletAddress) {   
             checkBalance();
         }
     }, [walletAddress])
 
-    useEffect(() => {
-        setLoading(false)
-    }, [balance])
-
-    async function checkBalance() {
+    async function checkBalance() {       
+        setLoading(true)
         const balanceRes = await checkBalanceOwner(String(walletAddress));
         setBalance(balanceRes)
+        setLoading(false)
     }
 
     async function checkTotalBank() {
+        setLoadingTotal(true)
         const totalBalanceRes = await checkTotalBalance();
         setTotalBalance(totalBalanceRes)
+        setLoadingTotal(false)
     }
     
     async function connectWalletPressed () {
@@ -156,7 +156,7 @@ export default function CardComponent() {
                 </Row>
             </Card.Header>
             <Card.Body className="py-3">
-                {loading ? <article className="loading-position-i"><LoadingComponent/></article> 
+                {loadingTotal ? <article className="loading-position-i"><LoadingComponent/></article> 
                 : <h4>Total Balance Bank : {numberFormat(totalBalance)}</h4>}       
                 <br />
                 {cardDetailComponent()}    
