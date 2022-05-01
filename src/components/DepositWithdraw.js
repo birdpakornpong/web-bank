@@ -18,7 +18,7 @@ export default function DepositWithdraw(props) {
                     <Form.Control placeholder="Enter Amount" value={amount} onChange={(e) => setAmount(e.target.value)} type="number" />
                 </Form.Group>
                 <section className='layout-button'>
-                    <Button variant="primary" onClick={confirm}>
+                    <Button variant="primary" onClick={confirm} disabled={amount <= 0}>
                         Confirm
                     </Button>
                 </section>                                  

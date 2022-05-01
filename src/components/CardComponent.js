@@ -85,8 +85,11 @@ export default function CardComponent() {
 
 
     async function listenEvent(type) {
-        await bankContract.once(type, (result) => {
-            if (result && result.returnValues) {      
+        await bankContract.once(type, (error, result) => {
+            if (result && result.returnValues) {  
+                const { owner } = result.returnValues
+                checkBalance(String(owner));
+                checkTotalBank()           
                 setEvents({
                     event: result.event,
                     owner: result.returnValues.owner,
@@ -94,9 +97,6 @@ export default function CardComponent() {
                     amount: result.returnValues.amount
                 })
                 setShow(true)
-                const { owner } = result.returnValues
-                checkBalance(String(owner));
-                checkTotalBank()         
             }
         });
     }
@@ -108,7 +108,7 @@ export default function CardComponent() {
         const { status, type } = await depositAmount(String(walletAddress), amount);
         setDetailTran(status)
         if (type == "success") {
-            await listenEvent("Deposit")
+            listenEvent("Deposit")        
         } else {
             setLoading(false) 
             setLoadingTotal(false)
@@ -122,7 +122,7 @@ export default function CardComponent() {
         const { status, type } = await transferAmount(String(walletAddress), String(addressTo), amount);
         setDetailTran(status) 
         if (type == "success") {
-            await listenEvent("Transfer")
+            listenEvent("Transfer") 
         } else {
             setLoading(false) 
         }
@@ -136,7 +136,7 @@ export default function CardComponent() {
         const {status ,type} = await withdrawAmount(String(walletAddress), amount);
         setDetailTran(status)
         if (type == "success") {
-            await listenEvent("Withdraw")
+            listenEvent("Withdraw")
         } else {
             setLoading(false) 
             setLoadingTotal(false)
@@ -148,8 +148,7 @@ export default function CardComponent() {
             <>
                 {statusTransaction ?
                 <>
-                    {detailTran}
-                    <div>
+                    <div className="mt-4">
                         <Button variant="primary" onClick={() => setStatusTransaction(false)}>Transaction Again</Button>
                     </div>
                     
@@ -171,6 +170,7 @@ export default function CardComponent() {
                         : <Card.Title><b>Balance : {numberFormat(balance)}</b></Card.Title> }
                        
                         <article className="mt-3">
+                            {detailTran}
                             {tabComponentStatusTransaction()}
                         </article>
                     </>
@@ -203,7 +203,7 @@ export default function CardComponent() {
                     <br />
                     {cardDetailComponent()}    
                     {/* <p className="status-box-i">Recent Transaction History</p> */}   
-                    {/* <Button onClick={() => setShow(true)}>Show Toast</Button>          */}
+                    <Button onClick={() => setShow(true)}>Show Toast</Button>         
                 </Card.Body>
             </Card>
         </>
