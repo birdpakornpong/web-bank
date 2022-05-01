@@ -13,3 +13,8 @@
 .status-box-i {
     font-size: 19px;
 }
+
+.loading-position-i {
+    display: flex;
+    justify-content: center;
+}

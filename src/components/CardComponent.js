@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Button, Row, Col, Card } from 'react-bootstrap';
 import { numberFormat } from "../utils/util"
 import TabComponent from './TabComponent';
+import LoadingComponent from '../utils/loading'
 import { connectWallet, getCurrentWalletConnected, checkBalanceOwner, depositAmount, transferAmount, withdrawAmount, checkTotalBalance } from '../utils/interact';
 import './CardComponent.css'
 
@@ -13,7 +14,8 @@ export default function CardComponent() {
     const [statusTransaction, setStatusTransaction] = useState(false);
     const [detailTran, setDetailTran] = useState("")
     const [status, setStatus] = useState("");
-    const [totalBalance, setTotalBalance] = useState(0)
+    const [totalBalance, setTotalBalance] = useState(0);
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         async function fetchWallet() {
@@ -28,9 +30,14 @@ export default function CardComponent() {
 
     useEffect(() => {
         if (walletAddress) {
+            setLoading(true)
             checkBalance();
         }
     }, [walletAddress])
+
+    useEffect(() => {
+        setLoading(false)
+    }, [balance])
 
     async function checkBalance() {
         const balanceRes = await checkBalanceOwner(String(walletAddress));
@@ -117,8 +124,13 @@ export default function CardComponent() {
             <>
                 {walletAddress ? 
                     <>
-                        <Card.Title><b>Balance : {numberFormat(balance)}</b></Card.Title> 
-                        <article>
+                        <Card.Text>
+                            <b>Address :</b> {walletAddress || <span className="text-error-i"> Not Connect</span>}                
+                        </Card.Text>
+                        {loading ? <article className="loading-position-i"><LoadingComponent/></article> 
+                        : <Card.Title><b>Balance : {numberFormat(balance)}</b></Card.Title> }
+                       
+                        <article className="mt-3">
                             {tabComponentStatusTransaction()}
                         </article>
                     </>
@@ -143,14 +155,12 @@ export default function CardComponent() {
                     </Col>                     
                 </Row>
             </Card.Header>
-            <Card.Body className="py-5">
-                <h2>Total Balance Bank : {numberFormat(totalBalance)}</h2>
-                <Card.Text>
-                    <b>Address :</b> {walletAddress || <span className="text-error-i"> Not Connect</span>}                
-                </Card.Text>
+            <Card.Body className="py-3">
+                {loading ? <article className="loading-position-i"><LoadingComponent/></article> 
+                : <h4>Total Balance Bank : {numberFormat(totalBalance)}</h4>}       
                 <br />
                 {cardDetailComponent()}    
-                {/* <p className="status-box-i">Recent Transaction History</p> */}                 
+                {/* <p className="status-box-i">Recent Transaction History</p> */}            
             </Card.Body>
         </Card>
     )
