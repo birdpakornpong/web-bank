@@ -1,5 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { numberFormat } from "../utils/util";
 
 export default function DepositWithdrawForm (props) {
     const { confirmButton, maxAmount } = props
@@ -18,7 +19,7 @@ export default function DepositWithdrawForm (props) {
             <span> {errors.address && "Address must request"}</span>
 
             <input type="number" {...register("amount", { required: true, min: 0, max: maxAmount})} />
-            <span> {errors.amount && "Amount must more 0 and less Balance"}</span>    
+            <span> {errors.amount && `Amount must more 0 and less ${numberFormat(maxAmount)}`}</span>    
 
             <input type="submit" />
         </form>
