@@ -3,7 +3,7 @@ import { Button, Form } from 'react-bootstrap';
 import './DepositWithdraw.css'
 
 export default function DepositWithdraw(props) {
-    const [amount, setAmount] = useState();
+    const [amount, setAmount] = useState(0);
     const { confirmButton } = props
 
     async function confirm () {

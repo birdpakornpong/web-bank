@@ -32,7 +32,6 @@ export default function CardComponent() {
     useEffect(() => {
         if (walletAddress) {   
             checkBalance(String(walletAddress));
-            setLoading(false)
         }
     }, [walletAddress])
 
@@ -42,24 +41,22 @@ export default function CardComponent() {
                 if (result && result.returnValues) {
                     const { owner } = result.returnValues
                     checkBalance(String(owner));
-                    setLoading(false)
                 }
             });
         }
     }, [])
 
-    // useEffect(() => {
-    //     if (window.ethereum) {
-    //         bankContract.once("Deposit", (error, result) => {  // event smart contract
-    //             if (result && result.returnValues) {
-    //                 checkBalance();
-    //                 checkTotalBank()
-    //                 setLoading(false)
-    //                 setLoadingTotal(false)
-    //             }
-    //         });
-    //     }
-    // }, [])
+    useEffect(() => {
+        if (window.ethereum) {
+            bankContract.once("Deposit", (error, result) => {
+                if (result && result.returnValues) {
+                    const { owner } = result.returnValues
+                    checkBalance(String(owner));
+                    checkTotalBank()         
+                }
+            });
+        }
+    }, [])
 
     async function checkBalance(owner) {       
         setLoading(true)
