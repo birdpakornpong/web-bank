@@ -58,6 +58,18 @@ export default function CardComponent() {
         }
     }, [])
 
+    useEffect(() => {
+        if (window.ethereum) {
+            bankContract.once("Withdraw", (error, result) => {
+                if (result && result.returnValues) {
+                    const { owner } = result.returnValues
+                    checkBalance(String(owner));
+                    checkTotalBank()         
+                }
+            });
+        }
+    }, [])
+
     async function checkBalance(owner) {       
         setLoading(true)
         const balanceRes = await checkBalanceOwner(String(owner));
@@ -119,12 +131,11 @@ export default function CardComponent() {
     }
 
     const withdraw = async (amount) => {
-        // setLoading(true)       
+        setLoading(true)       
+        setLoadingTotal(true)
         setStatusTransaction(true)
         const {status} = await withdrawAmount(String(walletAddress), amount);
         setDetailTran(status)
-        // setLoading(false)
- 
     }
 
     const tabComponentStatusTransaction = () => {
