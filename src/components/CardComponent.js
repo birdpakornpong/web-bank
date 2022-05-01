@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { Button, Row, Col, Card } from 'react-bootstrap';
 import { numberFormat } from "../utils/util"
 import TabComponent from './TabComponent';
+import ToastComponent from './ToastComponent';
 import LoadingComponent from '../utils/loading'
 import { connectWallet, getCurrentWalletConnected, checkBalanceOwner, depositAmount, transferAmount, withdrawAmount, checkTotalBalance, bankContract } from '../utils/interact';
 import './CardComponent.css'
+
 
 
 export default function CardComponent() {
@@ -17,6 +19,8 @@ export default function CardComponent() {
     const [totalBalance, setTotalBalance] = useState(0);
     const [loading, setLoading] = useState(false)
     const [loadingTotal, setLoadingTotal] = useState(false)
+    const [show, setShow] = useState(false);
+    const [events, setEvents] = useState({ event: "", owner: "", to: "", amount: ""})
 
     useEffect(() => {
         async function fetchWallet() {
@@ -81,8 +85,15 @@ export default function CardComponent() {
 
 
     async function listenEvent(type) {
-        await bankContract.once(type, (error, result) => {
-            if (result && result.returnValues) {
+        await bankContract.once(type, (result) => {
+            if (result && result.returnValues) {      
+                setEvents({
+                    event: result.event,
+                    owner: result.returnValues.owner,
+                    to: result.returnValues.to || "",
+                    amount: result.returnValues.amount
+                })
+                setShow(true)
                 const { owner } = result.returnValues
                 checkBalance(String(owner));
                 checkTotalBank()         
@@ -94,27 +105,42 @@ export default function CardComponent() {
         setLoading(true)
         setLoadingTotal(true)
         setStatusTransaction(true)
-        const { status } = await depositAmount(String(walletAddress), amount);
+        const { status, type } = await depositAmount(String(walletAddress), amount);
         setDetailTran(status)
-        await listenEvent("Deposit")
-        
+        if (type == "success") {
+            await listenEvent("Deposit")
+        } else {
+            setLoading(false) 
+            setLoadingTotal(false)
+        }
+      
     }
 
     const transfer = async (addressTo, amount) => {
         setLoading(true)
         setStatusTransaction(true) 
-        const { status } = await transferAmount(String(walletAddress), String(addressTo), amount);
+        const { status, type } = await transferAmount(String(walletAddress), String(addressTo), amount);
         setDetailTran(status) 
-        await listenEvent("Transfer")
+        if (type == "success") {
+            await listenEvent("Transfer")
+        } else {
+            setLoading(false) 
+        }
+    
     }
 
     const withdraw = async (amount) => {
         setLoading(true)       
         setLoadingTotal(true)
         setStatusTransaction(true)
-        const {status} = await withdrawAmount(String(walletAddress), amount);
+        const {status ,type} = await withdrawAmount(String(walletAddress), amount);
         setDetailTran(status)
-        await listenEvent("Withdraw")
+        if (type == "success") {
+            await listenEvent("Withdraw")
+        } else {
+            setLoading(false) 
+            setLoadingTotal(false)
+        }    
     }
 
     const tabComponentStatusTransaction = () => {
@@ -156,26 +182,31 @@ export default function CardComponent() {
     }
 
     return (
-        <Card style={{ borderRadius: '20px', width: '45em' }} className="card-layout-i"> 
-            <Card.Header>
-                <Row>
-                    <Col xs="7" className="py-1 px-4 mt-1 name-header-i">
-                        <h4>Simple Bank Web With Blockchain</h4>
-                    </Col>  
-                    <Col xs="5" className="mt-2 px-4 card-hearder-i">
-                        { walletAddress ? 
-                            <Button variant="success">Online</Button>
-                            : <Button variant="primary" onClick={connectWalletPressed}>Connect Metamark</Button>}      
-                    </Col>                     
-                </Row>
-            </Card.Header>
-            <Card.Body className="py-3">
-                {loadingTotal ? <article className="loading-position-i"><LoadingComponent/></article> 
-                : <h4>Total Balance Bank : {numberFormat(totalBalance)}</h4>}       
-                <br />
-                {cardDetailComponent()}    
-                {/* <p className="status-box-i">Recent Transaction History</p> */}            
-            </Card.Body>
-        </Card>
+        <>
+            <ToastComponent show={show} setShow={setShow} events={events} />
+            <Card style={{ borderRadius: '20px', width: '45em' }} className="card-layout-i"> 
+                <Card.Header>
+                    <Row>
+                        <Col xs="7" className="py-1 px-4 mt-1 name-header-i">
+                            <h4>Simple Bank Web With Blockchain</h4>
+                        </Col>  
+                        <Col xs="5" className="mt-2 px-4 card-hearder-i">
+                            { walletAddress ? 
+                                <Button variant="success">Online</Button>
+                                : <Button variant="primary" onClick={connectWalletPressed}>Connect Metamark</Button>}      
+                        </Col>                     
+                    </Row>
+                </Card.Header>
+                <Card.Body className="py-3">
+                    {loadingTotal ? <article className="loading-position-i"><LoadingComponent/></article> 
+                    : <h4>Total Balance Bank : {numberFormat(totalBalance)}</h4>}       
+                    <br />
+                    {cardDetailComponent()}    
+                    {/* <p className="status-box-i">Recent Transaction History</p> */}   
+                    {/* <Button onClick={() => setShow(true)}>Show Toast</Button>          */}
+                </Card.Body>
+            </Card>
+        </>
+       
     )
 }

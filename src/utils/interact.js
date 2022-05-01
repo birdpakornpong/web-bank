@@ -81,10 +81,12 @@ async function sendTransaction(transactionParameters) {
         });
         return {
             status: (transactionView(txHash)),
+            type: "success"
         };
     } catch (error) {
         return {
             status: "😥 " + error.message,
+            type: "error"
         };
     }
 }
@@ -101,22 +103,24 @@ const transactionView = (txHash) => {
     )
 }
 
-export const depositAmount = async (address, number) => {
+export const depositAmount = async (address, amount) => {
+    // value เลขฐาน 16
+    const amountSix = Number(amount).toString(16)
     const transactionParameters = {
         to: contractAddress,
         from: address,
-        value: number,
+        value: amountSix,
         data: bankContract.methods.deposit().encodeABI(),
     }
     const status = await sendTransaction(transactionParameters)
     return status
 }
 
-export const withdrawAmount = async (address, number) => {
+export const withdrawAmount = async (address, amount) => {
     const transactionParameters = {
         to: contractAddress,
         from: address,
-        data: bankContract.methods.withdraw(number).encodeABI(),
+        data: bankContract.methods.withdraw(amount).encodeABI(),
     }
     const status = await sendTransaction(transactionParameters)
     return status
