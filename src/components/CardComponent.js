@@ -63,8 +63,11 @@ export default function CardComponent() {
         if (window.ethereum) {
             window.ethereum.on("accountsChanged", (accounts) => {
             if (accounts.length > 0) {
+                setStatus("")
+                setDetailTran("")
+                setStatusTransaction(false)
+                
                 setWalletAddress(accounts[0]);
-                setStatus("👆🏽 Write a message in the text-field above.");
             } else {
                 setWalletAddress("");
             }
@@ -202,8 +205,7 @@ export default function CardComponent() {
                     : <h4>Total Balance Bank : {numberFormat(totalBalance)}</h4>}       
                     <br />
                     {cardDetailComponent()}    
-                    {/* <p className="status-box-i">Recent Transaction History</p> */}   
-                    <Button onClick={() => setShow(true)}>Show Toast</Button>         
+                    {/* <p className="status-box-i">Recent Transaction History</p> */}        
                 </Card.Body>
             </Card>
         </>
