@@ -3,7 +3,7 @@ import { Button, Row, Col, Card } from 'react-bootstrap';
 import { numberFormat } from "../utils/util"
 import TabComponent from './TabComponent';
 import LoadingComponent from '../utils/loading'
-import { connectWallet, getCurrentWalletConnected, checkBalanceOwner, depositAmount, transferAmount, withdrawAmount, checkTotalBalance } from '../utils/interact';
+import { connectWallet, getCurrentWalletConnected, checkBalanceOwner, depositAmount, transferAmount, withdrawAmount, checkTotalBalance, bankContract } from '../utils/interact';
 import './CardComponent.css'
 
 
@@ -34,6 +34,17 @@ export default function CardComponent() {
             checkBalance();
         }
     }, [walletAddress])
+
+    useEffect(() => {
+        if (window.ethereum) {
+            bankContract.once("Transfer", (error, result) => {  // event smart contract
+                if (result && result.returnValues) {
+                    checkBalance();
+                    setLoading(false)
+                }
+            });
+        }
+    }, [])
 
     async function checkBalance() {       
         setLoading(true)
@@ -88,10 +99,9 @@ export default function CardComponent() {
     }
 
     const transfer = async (addressTo, amount) => {
-        // setLoading(true)
+        setLoading(true)
         const { status } = await transferAmount(String(walletAddress), String(addressTo), amount);
         setDetailTran(status) 
-         // setLoading(false)
         setStatusTransaction(true) 
     }
 
