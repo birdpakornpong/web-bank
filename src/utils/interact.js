@@ -63,8 +63,7 @@ export const checkBalanceOwner = async (owner) => {
         if (err) {
             return 0
         }
-            console.log("The balance is: ", res)
-            return res
+        return res
     });
     return balance
 }

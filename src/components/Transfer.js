@@ -4,7 +4,7 @@ import './Transfer.css'
 
 export default function Transfer(props) {
     const [addressTo, setAddressTo] = useState("");
-    const [amount, setAmount] = useState();
+    const [amount, setAmountTrans] = useState(0);
 
     const { confirmButton } = props
 
@@ -22,7 +22,7 @@ export default function Transfer(props) {
 
                 <Form.Group className="mb-3" >
                     <Form.Label>Amount</Form.Label>
-                    <Form.Control placeholder="Enter Amount" value={amount} onChange={(e) => setAmount(e.target.value)} type="number" />
+                    <Form.Control placeholder="Enter Amount" value={amount} onChange={(e) => setAmountTrans(e.target.value)} type="number" />
                 </Form.Group>
                 <section className='layout-button'>
                     <Button variant="primary" onClick={confirm}>

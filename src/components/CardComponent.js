@@ -31,7 +31,8 @@ export default function CardComponent() {
 
     useEffect(() => {
         if (walletAddress) {   
-            checkBalance();
+            checkBalance(String(walletAddress));
+            setLoading(false)
         }
     }, [walletAddress])
 
@@ -39,16 +40,30 @@ export default function CardComponent() {
         if (window.ethereum) {
             bankContract.once("Transfer", (error, result) => {  // event smart contract
                 if (result && result.returnValues) {
-                    checkBalance();
+                    const { owner } = result.returnValues
+                    checkBalance(String(owner));
                     setLoading(false)
                 }
             });
         }
     }, [])
 
-    async function checkBalance() {       
+    // useEffect(() => {
+    //     if (window.ethereum) {
+    //         bankContract.once("Deposit", (error, result) => {  // event smart contract
+    //             if (result && result.returnValues) {
+    //                 checkBalance();
+    //                 checkTotalBank()
+    //                 setLoading(false)
+    //                 setLoadingTotal(false)
+    //             }
+    //         });
+    //     }
+    // }, [])
+
+    async function checkBalance(owner) {       
         setLoading(true)
-        const balanceRes = await checkBalanceOwner(String(walletAddress));
+        const balanceRes = await checkBalanceOwner(String(owner));
         setBalance(balanceRes)
         setLoading(false)
     }
@@ -91,26 +106,28 @@ export default function CardComponent() {
     }
 
     const deposit = async (amount) => {
-        // setLoading(true)
+        setLoading(true)
+        setLoadingTotal(true)
+        setStatusTransaction(true)
         const { status } = await depositAmount(String(walletAddress), amount);
         setDetailTran(status)
-        // setLoading(false)
-        setStatusTransaction(true)
+        
     }
 
     const transfer = async (addressTo, amount) => {
         setLoading(true)
+        setStatusTransaction(true) 
         const { status } = await transferAmount(String(walletAddress), String(addressTo), amount);
         setDetailTran(status) 
-        setStatusTransaction(true) 
     }
 
     const withdraw = async (amount) => {
-        // setLoading(true)
+        // setLoading(true)       
+        setStatusTransaction(true)
         const {status} = await withdrawAmount(String(walletAddress), amount);
         setDetailTran(status)
         // setLoading(false)
-        setStatusTransaction(true)
+ 
     }
 
     const tabComponentStatusTransaction = () => {
