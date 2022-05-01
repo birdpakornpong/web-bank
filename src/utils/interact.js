@@ -105,7 +105,7 @@ const transactionView = (txHash) => {
 
 export const depositAmount = async (address, amount) => {
     // value เลขฐาน 16
-    const amountSix = Number(amount).toString(16)
+    const amountSix = web3.utils.toHex(amount);
     const transactionParameters = {
         to: contractAddress,
         from: address,

@@ -14,7 +14,7 @@ export default function DepositWithdrawForm (props) {
     const [errorAddress, setErrorAddress] = useState(false)
 
     async function confirm(data) {
-        const checkAddress = await web3.utils.isAddress(data.address);
+        const checkAddress = await (web3.utils.isAddress(data.address) && data.address !== "0x0000000000000000000000000000000000000000");
         if (checkAddress) {
             confirmButton(data.address, data.amount)
         } else {
@@ -28,7 +28,7 @@ export default function DepositWithdrawForm (props) {
         <form onSubmit={handleSubmit(onSubmit)}>
             <input {...register("address", { required: true })} />
             <span> {errors.address && "Address must request"}</span>
-            <span> {errorAddress && "is not Address"}</span>
+            <span> {errorAddress && "is be Address and not Addess Zero"}</span>
 
             <input type="number" {...register("amount", { required: true, min: 0, max: maxAmount})} />
             <span> {errors.amount && `Amount must more 0 and less ${numberFormat(maxAmount)}`}</span>    
