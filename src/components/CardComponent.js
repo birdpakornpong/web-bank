@@ -35,41 +35,6 @@ export default function CardComponent() {
         }
     }, [walletAddress])
 
-    useEffect(() => {
-        if (window.ethereum) {
-            bankContract.once("Transfer", (error, result) => {  // event smart contract
-                if (result && result.returnValues) {
-                    const { owner } = result.returnValues
-                    checkBalance(String(owner));
-                }
-            });
-        }
-    }, [])
-
-    useEffect(() => {
-        if (window.ethereum) {
-            bankContract.once("Deposit", (error, result) => {
-                if (result && result.returnValues) {
-                    const { owner } = result.returnValues
-                    checkBalance(String(owner));
-                    checkTotalBank()         
-                }
-            });
-        }
-    }, [])
-
-    useEffect(() => {
-        if (window.ethereum) {
-            bankContract.once("Withdraw", (error, result) => {
-                if (result && result.returnValues) {
-                    const { owner } = result.returnValues
-                    checkBalance(String(owner));
-                    checkTotalBank()         
-                }
-            });
-        }
-    }, [])
-
     async function checkBalance(owner) {       
         setLoading(true)
         const balanceRes = await checkBalanceOwner(String(owner));
@@ -114,12 +79,24 @@ export default function CardComponent() {
         }
     }
 
+
+    function listenEvent(type) {
+        bankContract.once(type, (error, result) => {
+            if (result && result.returnValues) {
+                const { owner } = result.returnValues
+                checkBalance(String(owner));
+                checkTotalBank()         
+            }
+        });
+    }
+
     const deposit = async (amount) => {
         setLoading(true)
         setLoadingTotal(true)
         setStatusTransaction(true)
         const { status } = await depositAmount(String(walletAddress), amount);
         setDetailTran(status)
+        await listenEvent("Deposit")
         
     }
 
@@ -128,6 +105,7 @@ export default function CardComponent() {
         setStatusTransaction(true) 
         const { status } = await transferAmount(String(walletAddress), String(addressTo), amount);
         setDetailTran(status) 
+        await listenEvent("Transfer")
     }
 
     const withdraw = async (amount) => {
@@ -136,6 +114,7 @@ export default function CardComponent() {
         setStatusTransaction(true)
         const {status} = await withdrawAmount(String(walletAddress), amount);
         setDetailTran(status)
+        await listenEvent("Withdraw")
     }
 
     const tabComponentStatusTransaction = () => {
