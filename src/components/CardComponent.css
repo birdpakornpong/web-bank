@@ -2,6 +2,13 @@
     text-align: end;
 }
 
+@media screen and (max-width: 600px) {
+    .card-layout-i {
+        min-height: 100vh;
+        border-radius: 0 !important;
+    }
+}
+
 .name-header-i {
     text-align: start;
 }

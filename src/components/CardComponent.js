@@ -156,7 +156,7 @@ export default function CardComponent() {
     }
 
     return (
-        <Card style={{ borderRadius: '20px', width: '52em' }}> 
+        <Card style={{ borderRadius: '20px', width: '45em' }} className="card-layout-i"> 
             <Card.Header>
                 <Row>
                     <Col xs="7" className="py-1 px-4 mt-1 name-header-i">
