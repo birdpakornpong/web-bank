@@ -97,8 +97,6 @@ const transactionView = (txHash) => {
             View the status of your transaction on Etherscan!
             </a>
             <br />
-            ℹ️ Once the transaction is verified by the network, the message will
-            be updated automatically.
         </span>
     )
 }

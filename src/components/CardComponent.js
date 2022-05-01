@@ -80,8 +80,8 @@ export default function CardComponent() {
     }
 
 
-    function listenEvent(type) {
-        bankContract.once(type, (error, result) => {
+    async function listenEvent(type) {
+        await bankContract.once(type, (error, result) => {
             if (result && result.returnValues) {
                 const { owner } = result.returnValues
                 checkBalance(String(owner));
