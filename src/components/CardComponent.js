@@ -24,9 +24,11 @@ export default function CardComponent() {
 
     useEffect(() => {
         async function fetchWallet() {
-          const {address, status} = await getCurrentWalletConnected();
-          setWalletAddress(address);
-          setStatus(status); 
+            if (window.ethereum) {
+                const {address, status} = await getCurrentWalletConnected();
+                setWalletAddress(address);
+                setStatus(status); 
+            }       
         }
         fetchWallet();
         checkTotalBank();
@@ -66,7 +68,7 @@ export default function CardComponent() {
                 setStatus("")
                 setDetailTran("")
                 setStatusTransaction(false)
-                
+
                 setWalletAddress(accounts[0]);
             } else {
                 setWalletAddress("");
