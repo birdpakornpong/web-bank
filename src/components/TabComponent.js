@@ -4,7 +4,7 @@ import Tab from 'react-bootstrap/Tab'
 import TabMainComponent from "./TabMainComponent";
 
 export default function TabComponent(props) {
-    const { deposit, withdraw, transfer} = props
+    const { deposit, withdraw, transfer, balance, balanceMetamark} = props
     const [key, setKey] = useState('deposit');
 
     const dataHeader = [
@@ -30,7 +30,7 @@ export default function TabComponent(props) {
         >
             {dataHeader.map((item, index) => {
                 return  <Tab eventKey={item.eventKey} title={item.title} key={index}>
-                            <TabMainComponent mainShow={index} deposit={deposit} withdraw={withdraw} transfer={transfer} />
+                            <TabMainComponent mainShow={index} deposit={deposit} withdraw={withdraw} transfer={transfer} balance={balance} balanceMetamark={balanceMetamark}/>
                         </Tab>           
             })}
             

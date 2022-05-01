@@ -4,7 +4,7 @@ import { createAlchemyWeb3 } from "@alch/alchemy-web3";
 
 dotenv.config()
 const alchemyKey = process.env.REACT_APP_ALCHEMY_KEY
-const web3 = createAlchemyWeb3(alchemyKey);
+export const web3 = createAlchemyWeb3(alchemyKey);
 const contractAddress = "0xb97d05B5b4e50567767B65dB76DFE9f603a2E6F5";
 
 export const bankContract = new web3.eth.Contract(

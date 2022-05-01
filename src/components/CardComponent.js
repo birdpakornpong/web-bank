@@ -4,7 +4,7 @@ import { numberFormat } from "../utils/util"
 import TabComponent from './TabComponent';
 import ToastComponent from './ToastComponent';
 import LoadingComponent from '../utils/loading'
-import { connectWallet, getCurrentWalletConnected, checkBalanceOwner, depositAmount, transferAmount, withdrawAmount, checkTotalBalance, bankContract } from '../utils/interact';
+import { connectWallet, getCurrentWalletConnected, checkBalanceOwner, depositAmount, transferAmount, withdrawAmount, checkTotalBalance, bankContract, web3 } from '../utils/interact';
 import './CardComponent.css'
 
 
@@ -21,6 +21,7 @@ export default function CardComponent() {
     const [loadingTotal, setLoadingTotal] = useState(false)
     const [show, setShow] = useState(false);
     const [events, setEvents] = useState({ event: "", owner: "", to: "", amount: ""})
+    const [balanceMetamark, setBalanceMetamark] = useState(0)
 
     useEffect(() => {
         async function fetchWallet() {
@@ -38,8 +39,17 @@ export default function CardComponent() {
     useEffect(() => {
         if (walletAddress) {   
             checkBalance(String(walletAddress));
+            balanceMetamarkHandler(String(walletAddress))
         }
     }, [walletAddress])
+
+    async function balanceMetamarkHandler(address) {
+        if (window.ethereum) {
+            await web3.eth.getBalance(String(address)).then((value) => {
+                setBalanceMetamark(value)
+            });
+        }
+    }
 
     async function checkBalance(owner) {       
         setLoading(true)
@@ -158,7 +168,7 @@ export default function CardComponent() {
                     </div>
                     
                 </> 
-                :  <TabComponent deposit={deposit} withdraw={withdraw} transfer={transfer} />} 
+                :  <TabComponent deposit={deposit} withdraw={withdraw} transfer={transfer} balance={balance} balanceMetamark={balanceMetamark}/>} 
             </>
         )
     }
