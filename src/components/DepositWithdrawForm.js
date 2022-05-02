@@ -19,9 +19,9 @@ export default function DepositWithdrawForm (props) {
     return (
         <div className='layout-deposit-form'>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <label className="text-label">Amount</label>
+                <label className="text-label">Amount (Wei)</label>
                 <input className={errors.amount ? "input-custom-error" : "input-custom"} type="number" {...register("amount", { required: true, min: 1, max: maxAmount})} placeholder="Enter Amount" />
-                <span className="error-text"> {errors.amount && `Amount must more 0 and less ${numberFormat(maxAmount)}`}</span>   
+                <span className="error-text"> {errors.amount && `Amount must more 0 and less ${numberFormat(maxAmount)} Wei`}</span>   
                 <div className="layout-button">
                     <input type="submit" className="button-submit"/>
                 </div>        

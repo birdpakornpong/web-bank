@@ -179,7 +179,7 @@ export default function CardComponent() {
                             <b>Address :</b> {walletAddress || <span className="text-error-i"> Not Connect</span>}                
                         </Card.Text>
                         {loading ? <article className="loading-position-i"><LoadingComponent/></article> 
-                        : <Card.Title><b>Balance : {numberFormat(balance)}</b></Card.Title> }
+                        : <Card.Title><b>Balance : {numberFormat(balance)} Wei</b></Card.Title> }
                        
                         <article className="mt-3">
                             <div className='mb-3'>
@@ -213,7 +213,7 @@ export default function CardComponent() {
                 </Card.Header>
                 <Card.Body className="py-3">
                     {loadingTotal ? <article className="loading-position-i"><LoadingComponent/></article> 
-                    : <h4>Total Balance Bank : {numberFormat(totalBalance)}</h4>}       
+                    : <h4>Total Balance Bank : {numberFormat(totalBalance)} Wei</h4>}       
                     <br />
                     {cardDetailComponent()}     
                 </Card.Body>
