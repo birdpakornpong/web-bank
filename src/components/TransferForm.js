@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useForm, Controller  } from "react-hook-form";
 import { numberFormat } from "../utils/util";
 import { web3 } from '../utils/interact';
+import './DepositWithdrawForm.css'
 
 export default function DepositWithdrawForm (props) {
 
@@ -25,15 +26,21 @@ export default function DepositWithdrawForm (props) {
     const onSubmit = data => confirm(data);
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
-            <input {...register("address", { required: true })} />
-            <span> {errors.address && "Address must request"}</span>
-            <span> {errorAddress && "is be Address and not Addess Zero"}</span>
-
-            <input type="number" {...register("amount", { required: true, min: 0, max: maxAmount})} />
-            <span> {errors.amount && `Amount must more 0 and less ${numberFormat(maxAmount)}`}</span>    
-
-            <input type="submit" />
-        </form>
+        <div className='layout-deposit-form'>
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <label className="text-label">Address</label>
+                <input  className={errors.amount || errorAddress ? "input-custom-error" : "input-custom"} {...register("address", { required: true })} placeholder="Enter Address"/>
+                <span className="error-text"> {errors.address && "Address must request"}</span>
+                <span className="error-text"> {errorAddress && "is be Address and not Addess Zero"}</span>
+                
+                <label className="text-label">Amount</label>
+                {/* <input className="input-custom" type="number" {...register("amount", { required: true, min: 1, max: maxAmount})} placeholder="Enter Amount"/> */}
+                <input className={errors.amount ? "input-custom-error" : "input-custom"} type="number" {...register("amount", { required: true, min: 1, max: maxAmount})} placeholder="Enter Amount"/>
+                <span className="error-text"> {errors.amount && `Amount must more 0 and less ${numberFormat(maxAmount)}`}</span>    
+                <div className="layout-button">
+                    <input type="submit" className="button-submit"/>
+                </div>  
+            </form>
+        </div>
     );
 }

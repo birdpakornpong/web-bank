@@ -185,7 +185,9 @@ export default function CardComponent() {
                         : <Card.Title><b>Balance : {numberFormat(balance)}</b></Card.Title> }
                        
                         <article className="mt-3">
-                            {detailTran}
+                            <div className='mb-3'>
+                                {detailTran}
+                            </div>
                             {tabComponentStatusTransaction()}
                         </article>
                     </>

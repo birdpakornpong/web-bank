@@ -10,9 +10,9 @@ export default function TabMainComponent(props) {
 
     return (
         <>
-            {mainShow == 0 && <><DepositWithdraw  confirmButton={deposit} /><DepositWithdrawForm confirmButton={deposit} maxAmount={balanceMetamark}/></>}
-            {mainShow == 1 && <><DepositWithdraw  confirmButton={withdraw} /><DepositWithdrawForm confirmButton={withdraw} maxAmount={balance}/></>}
-            {mainShow == 2 && <><Transfer confirmButton={transfer} /><TransferForm confirmButton={transfer} maxAmount={balance}/></>}
+            {mainShow == 0 && <><DepositWithdrawForm confirmButton={deposit} maxAmount={balanceMetamark}/></>}
+            {mainShow == 1 && <><DepositWithdrawForm confirmButton={withdraw} maxAmount={balance}/></>}
+            {mainShow == 2 && <><TransferForm confirmButton={transfer} maxAmount={balance}/></>}
         </>
     )
 }
