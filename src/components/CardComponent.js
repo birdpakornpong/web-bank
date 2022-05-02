@@ -210,7 +210,7 @@ export default function CardComponent() {
                         <Col xs="5" className="mt-2 px-4 card-hearder-i">
                             { walletAddress ? 
                                 <Button variant="success">Online</Button>
-                                : <Button variant="primary" onClick={connectWalletPressed}>Connect Metamark</Button>}      
+                                : <Button variant="primary" disabled={!window.ethereum} onClick={connectWalletPressed}>Connect Metamark</Button>}      
                         </Col>                     
                     </Row>
                 </Card.Header>
@@ -218,8 +218,7 @@ export default function CardComponent() {
                     {loadingTotal ? <article className="loading-position-i"><LoadingComponent/></article> 
                     : <h4>Total Balance Bank : {numberFormat(totalBalance)}</h4>}       
                     <br />
-                    {cardDetailComponent()}    
-                    {/* <p className="status-box-i">Recent Transaction History</p> */}        
+                    {cardDetailComponent()}     
                 </Card.Body>
             </Card>
         </>

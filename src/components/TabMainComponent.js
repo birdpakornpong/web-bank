@@ -1,7 +1,5 @@
 import React from "react";
-import DepositWithdraw from "./DepositWithdraw"
 import DepositWithdrawForm from "./DepositWithdrawForm"
-import Transfer from "./Transfer"
 import TransferForm from "./TransferForm"
 
 export default function TabMainComponent(props) {
