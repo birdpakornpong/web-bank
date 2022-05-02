@@ -34,7 +34,6 @@ export default function DepositWithdrawForm (props) {
                 <span className="error-text"> {errorAddress && "is be Address and not Addess Zero"}</span>
                 
                 <label className="text-label">Amount</label>
-                {/* <input className="input-custom" type="number" {...register("amount", { required: true, min: 1, max: maxAmount})} placeholder="Enter Amount"/> */}
                 <input className={errors.amount ? "input-custom-error" : "input-custom"} type="number" {...register("amount", { required: true, min: 1, max: maxAmount})} placeholder="Enter Amount"/>
                 <span className="error-text"> {errors.amount && `Amount must more 0 and less ${numberFormat(maxAmount)}`}</span>    
                 <div className="layout-button">
