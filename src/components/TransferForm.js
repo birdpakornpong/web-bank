@@ -17,6 +17,7 @@ export default function DepositWithdrawForm (props) {
     async function confirm(data) {
         const checkAddress = await (web3.utils.isAddress(data.address) && data.address !== "0x0000000000000000000000000000000000000000");
         if (checkAddress) {
+            setErrorAddress(false)
             confirmButton(data.address, data.amount)
         } else {
             setErrorAddress(true)
