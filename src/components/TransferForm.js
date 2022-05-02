@@ -15,6 +15,7 @@ export default function DepositWithdrawForm (props) {
     const [errorAddress, setErrorAddress] = useState(false)
 
     async function confirm(data) {
+        setErrorAddress(false)
         const checkAddress = await (web3.utils.isAddress(data.address) && data.address !== "0x0000000000000000000000000000000000000000");
         if (checkAddress) {
             setErrorAddress(false)
@@ -30,7 +31,7 @@ export default function DepositWithdrawForm (props) {
         <div className='layout-deposit-form'>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <label className="text-label">Address</label>
-                <input  className={errors.amount || errorAddress ? "input-custom-error" : "input-custom"} {...register("address", { required: true })} placeholder="Enter Address"/>
+                <input  className={errors.address || errorAddress ? "input-custom-error" : "input-custom"} {...register("address", { required: true })} placeholder="Enter Address"/>
                 <span className="error-text"> {errors.address && "Address must request"}</span>
                 <span className="error-text"> {errorAddress && "is be Address and not Addess Zero"}</span>
                 
