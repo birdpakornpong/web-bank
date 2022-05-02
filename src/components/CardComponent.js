@@ -100,14 +100,16 @@ export default function CardComponent() {
         await bankContract.once(type, (error, result) => {
             if (result && result.returnValues) {  
                 const { owner } = result.returnValues
+         
                 checkBalance(String(owner));
-                checkTotalBank()           
+                checkTotalBank()                 
                 setEvents({
                     event: result.event,
                     owner: result.returnValues.owner,
                     to: result.returnValues.to || "",
                     amount: result.returnValues.amount
                 })
+                balanceMetamarkHandler(String(owner)) 
                 setShow(true)
             }
         });
@@ -120,7 +122,7 @@ export default function CardComponent() {
         const { status, type } = await depositAmount(String(walletAddress), amount);
         setDetailTran(status)
         if (type == "success") {
-            listenEvent("Deposit")        
+            listenEvent("Deposit") 
         } else {
             setLoading(false) 
             setLoadingTotal(false)
